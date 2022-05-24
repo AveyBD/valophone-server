@@ -24,6 +24,7 @@ async function run() {
     await client.connect();
     const productsCollection = client.db("ValoPhone").collection("products");
     const usersCollection = client.db("ValoPhone").collection("users");
+    const ordersCollection = client.db("ValoPhone").collection("orders");
 
     // basic all product api
     app.get("/products", async (req, res) => {
@@ -31,6 +32,28 @@ async function run() {
       const cursor = productsCollection.find(query);
       const products = await cursor.toArray();
       res.send(products);
+    });
+    // get single product
+    app.get("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const product = await productsCollection.findOne(query);
+      res.send(product);
+    });
+
+    // get all order
+    app.get("/orders", async (req, res) => {
+      const query = {};
+      const cursor = ordersCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+
+    // add order
+    app.post("/orders", async (req, res) => {
+      const order = req.body;
+      const result = await ordersCollection.insertOne(order);
+      res.send(result);
     });
     // Add Product
     app.post("/products", async (req, res) => {
