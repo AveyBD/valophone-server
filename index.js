@@ -49,6 +49,14 @@ async function run() {
       res.send(orders);
     });
 
+    // get all order
+    app.get("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const order = await ordersCollection.findOne(query);
+      res.send(order);
+    });
+
     // add order
     app.post("/orders", async (req, res) => {
       const order = req.body;
