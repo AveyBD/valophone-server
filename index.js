@@ -22,6 +22,7 @@ async function run() {
   try {
     await client.connect();
     const productsCollection = client.db("ValoPhone").collection("products");
+    const usersCollection = client.db("ValoPhone").collection("users");
 
     // basic all product api
     app.get("/products", async (req, res) => {
@@ -29,6 +30,23 @@ async function run() {
       const cursor = productsCollection.find(query);
       const products = await cursor.toArray();
       res.send(products);
+    });
+
+    // insert user into database
+    app.put("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const user = req.body;
+      const updatedDoc = {
+        $set: user,
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
     });
   } finally {
   }
