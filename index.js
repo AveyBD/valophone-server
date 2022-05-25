@@ -22,7 +22,7 @@ const client = new MongoClient(uri, {
 function verifyJWT(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    res.status(401).send({ messasge: "Unauthorized Access" });
+    return res.status(401).send({ messasge: "Unauthorized Access" });
   } else {
     const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
@@ -128,8 +128,8 @@ async function run() {
       const result = await productsCollection.deleteOne(filter);
       res.send(result);
     });
-// get all user 
-    app.get("/users", async (req, res) => {
+    // get all user
+    app.get("/users", verifyJWT, async (req, res) => {
       const query = {};
       const cursor = usersCollection.find(query);
       const orders = await cursor.toArray();
@@ -156,6 +156,32 @@ async function run() {
         { expiresIn: "1h" }
       );
       res.send({ result, token });
+    });
+
+    // make admin
+    app.put("/user/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const updatedDoc = {
+        $set: {
+          role: "admin",
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    });
+
+    // make user
+    app.put("/user/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const updatedDoc = {
+        $set: {
+          role: "user",
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updatedDoc);
+      res.send(result);
     });
   } finally {
   }
