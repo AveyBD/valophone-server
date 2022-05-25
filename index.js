@@ -114,6 +114,12 @@ async function run() {
       const result = await productsCollection.insertOne(product);
       res.send(result);
     });
+    // Add Reviews
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+      const result = await reviewsCollection.insertOne(review);
+      res.send(result);
+    });
 
     // delete api
     app.delete("/products/:id", async (req, res) => {
