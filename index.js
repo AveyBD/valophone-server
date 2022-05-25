@@ -128,6 +128,13 @@ async function run() {
       const result = await productsCollection.deleteOne(filter);
       res.send(result);
     });
+// get all user 
+    app.get("/users", async (req, res) => {
+      const query = {};
+      const cursor = usersCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
 
     // insert user into database
     app.put("/user/:email", async (req, res) => {
