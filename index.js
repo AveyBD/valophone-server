@@ -49,7 +49,16 @@ async function run() {
       res.send(orders);
     });
 
-    // get all order
+    // get user order
+    app.get("/myorders", async (req, res) => {
+      const user = req.query.mail;
+      const query = {user: user};
+      const cursor = ordersCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+
+    // get single order info
     app.get("/orders/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
