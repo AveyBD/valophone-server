@@ -72,6 +72,13 @@ async function run() {
       const result = await ordersCollection.insertOne(order);
       res.send(result);
     });
+
+    app.delete("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await ordersCollection.deleteOne(filter);
+      res.send(result);
+    });
     // Add Product
     app.post("/products", async (req, res) => {
       const product = req.body;
