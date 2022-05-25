@@ -136,6 +136,14 @@ async function run() {
       res.send(orders);
     });
 
+    // get single user info
+    app.get("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const order = await usersCollection.findOne(query);
+      res.send(order);
+    });
+
     // insert user into database
     app.put("/user/:email", async (req, res) => {
       const email = req.params.email;
