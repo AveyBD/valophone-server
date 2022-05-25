@@ -41,6 +41,7 @@ async function run() {
     const productsCollection = client.db("ValoPhone").collection("products");
     const usersCollection = client.db("ValoPhone").collection("users");
     const ordersCollection = client.db("ValoPhone").collection("orders");
+    const reviewsCollection = client.db("ValoPhone").collection("reviews");
 
     // basic all product api
     app.get("/products", async (req, res) => {
@@ -48,6 +49,13 @@ async function run() {
       const cursor = productsCollection.find(query);
       const products = await cursor.toArray();
       res.send(products);
+    });
+    // basic all product api
+    app.get("/reviews", async (req, res) => {
+      const query = {};
+      const cursor = reviewsCollection.find(query);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
     });
     // get single product
     app.get("/product/:id", async (req, res) => {
