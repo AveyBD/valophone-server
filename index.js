@@ -50,7 +50,7 @@ async function run() {
       const products = await cursor.toArray();
       res.send(products);
     });
-    // basic all product api
+    // basic all reviews api
     app.get("/reviews", async (req, res) => {
       const query = {};
       const cursor = reviewsCollection.find(query);
@@ -222,6 +222,19 @@ async function run() {
       } else {
         res.status(403).send({ message: "Forbidden Access" });
       }
+    });
+
+    // update Profile
+    app.put("/profile/:email", async (req, res) => {
+      const profile = req.body;
+      console.log(profile);
+      const email = req.params.email;
+      const filter = { email: email };
+      const updatedDoc = {
+        $set: profile,
+      };
+      const result = await usersCollection.updateOne(filter, updatedDoc);
+      res.send(result);
     });
 
     // make user
