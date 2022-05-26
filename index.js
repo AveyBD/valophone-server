@@ -102,6 +102,37 @@ async function run() {
       res.send(result);
     });
 
+    // make paid
+    app.put("/order/:id", verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          paymentStatus: "paid",
+          trxId: "AdminPay",
+        },
+      };
+      const result = await ordersCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    });
+
+    // admin ship
+    app.put("/ship/:id", verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const date = new Date().toLocaleString();
+      const filter = { _id: ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          paymentStatus: "W/O Pay",
+          trxId: "Shipped W/O Pay",
+          orderStatus: "shipped",
+          shippingDate: date,
+        },
+      };
+      const result = await ordersCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    });
+
     app.delete("/orders/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
