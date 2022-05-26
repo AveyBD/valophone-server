@@ -194,16 +194,22 @@ async function run() {
     });
 
     // make user
-    app.put("/user/user/:email", async (req, res) => {
+    app.put("/user/user/:email", verifyJWT, async (req, res) => {
       const email = req.params.email;
-      const filter = { email: email };
-      const updatedDoc = {
-        $set: {
-          role: "user",
-        },
-      };
-      const result = await usersCollection.updateOne(filter, updatedDoc);
-      res.send(result);
+      const requester = req.decoded.email;
+      const reqAccount = await usersCollection.findOne({ email: requester });
+      if (reqAccount.role === "admin") {
+        const filter = { email: email };
+        const updatedDoc = {
+          $set: {
+            role: "user",
+          },
+        };
+        const result = await usersCollection.updateOne(filter, updatedDoc);
+        res.send(result);
+      } else {
+        res.status(403).send({ message: "Forbidden Access" });
+      }
     });
   } finally {
   }
