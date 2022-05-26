@@ -116,7 +116,7 @@ async function run() {
       res.send(result);
     });
 
-    // admin ship
+    // admin shipment
     app.put("/ship/:id", verifyJWT, async (req, res) => {
       const id = req.params.id;
       const date = new Date().toLocaleString();
